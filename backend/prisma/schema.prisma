@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,40 +8,40 @@ datasource db {
 }
 
 model user {
-  id             Int       @id   @default(autoincrement())
-  username       String
-  phone          String    @unique
-  address        String?
-  password       String
-  role           String
-  createdAt      DateTime   @default(now())
-  updatedAt      DateTime   @updatedAt
-  programs      program[]  
-  devotees       devotees[] 
-
+  id        Int         @id @default(autoincrement())
+  username  String
+  phone     String      @unique
+  address   String?
+  password  String
+  role      String
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  devotees  devotees[]
+  programs  program[]   @relation("UserPrograms")
 }
 
 model program {
-  id            Int       @id   @default(autoincrement())
-  programname   String
-  description   String
-  date          DateTime  
-  status        String
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  devotees      devotees[] 
-  users         user[]
-   
+  id          Int         @id @default(autoincrement())
+  programname String
+  description String
+  startTime   DateTime
+  endTime     DateTime
+  status      String
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  devotees    devotees[]
+  users       user[]      @relation("UserPrograms")  
 }
 
 model devotees {
-  id            Int       @id    @default(autoincrement())
-  name          String    
-  contribution  String    
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  userId        Int?      
-  programId     Int?    
-  user          user?     @relation(fields: [userId], references: [id])
-  program       program?  @relation(fields: [programId], references: [id])
+  id          Int         @id @default(autoincrement())
+  name        String
+  contribution Int
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  userId      Int
+  programId   Int
+  phoneNo      String
+  user        user        @relation(fields: [userId], references: [id])
+  program     program     @relation(fields: [programId], references: [id])
 }

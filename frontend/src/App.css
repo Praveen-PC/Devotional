@@ -1,6 +1,4 @@
 
-
-/* Navbar item styles */
 .nav-item {
   font-weight: 600;
   color: grey;
@@ -28,7 +26,6 @@
   color: black;
 }
 
-/* Logout button for small screens (inside toggle menu) */
 .nav-item .btn {
   margin-top: 8px;
   text-align: center;
@@ -37,3 +34,26 @@
 .login{
   background-image: url(https://img.freepik.com/premium-vector/blue-white-background-with-floral-pattern_1031481-14.jpg?semt=ais_hybrid);
 }
+
+
+input.input-box {
+  border: none;
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border-bottom: 2px solid black;
+}
+
+input.input-box:focus {
+  outline: none;
+  border-bottom: 2px solid blue;
+}
+
+
+.programdetails{
+  background-image: url(https://wallpapers.com/images/hd/professional-background-2b3p57557lfg0y5g.jpg);
+
+}
+
+
+

@@ -2,20 +2,30 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { context } from '../App';
+import axios from 'axios';
 
 const Login = () => {
   const [phoneNo, setPhoneNo] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
-  const { setIsToken } = useContext(context);  
+  const { setIsToken,setToken ,setUserRole} = useContext(context);  
 
-  const handleLogin = (e) => {
+  const handleLogin = async(e) => {
     e.preventDefault();
     try {
-      const values = [{ phoneNo: phoneNo }, { password: password }];
-      sessionStorage.setItem('token', JSON.stringify(values)); 
-      setIsToken(true);  
-      navigate('/dashboard');
+     const response= await axios.post('http://localhost:8000/api/loginUser',{phoneNo,password}) 
+       const token = response.data.token;
+      sessionStorage.setItem('token', token);
+      setToken(token);
+      const decodedToken = JSON.parse(atob(token.split(".")[1]));
+      const userRole = decodedToken.userRole;
+      setUserRole(userRole); 
+      setIsToken(true);
+      if (userRole === 'Admin') {
+        navigate('/dashboard');
+      } else if (userRole === 'Devotee') {
+        navigate('/program');
+      }
     } catch (error) {
       console.log({ error: error.message });
     }
