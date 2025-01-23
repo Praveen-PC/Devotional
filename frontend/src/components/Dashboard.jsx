@@ -65,6 +65,7 @@ const Dashboard = () => {
     } catch (error) {
       console.log(error);
     }
+    
   };
 
   const handleProgramDetails = async () => {
