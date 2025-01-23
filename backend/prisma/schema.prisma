@@ -39,9 +39,8 @@ model devotees {
   contribution Int
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
-  userId      Int
+  userId      Int?
   programId   Int
-  phoneNo      String
-  user        user        @relation(fields: [userId], references: [id])
+  user        user ?       @relation(fields: [userId], references: [id])
   program     program     @relation(fields: [programId], references: [id])
 }

@@ -24,18 +24,27 @@ const addProgram=async(req,res)=>{
 
 const getAllProgram=async(req,res)=>{
     try{
-        const allProgram=await prisma.program.findMany({   
-            include: {
-                devotees: true,
-                users: true,
-              },
-         })
+        const allProgram=await prisma.program.findMany({
+        where:{
+            status:'active'
+        } })
         res.status(200).send(allProgram)
     }catch(error){
         res.status(400).send(error)
     }
 }
-
+const getClosedProgram=async(req,res)=>{
+    try{
+        const data=await prisma.program.findMany({
+            where:{
+                status:'close'
+            }
+        })
+        res.status(200).send(data)
+    }catch(error){
+        res.status(400).send(error)
+    }
+}
 
 const userData=async(req,res)=>{
     const {phoneNo}=req.params;
@@ -46,7 +55,6 @@ const userData=async(req,res)=>{
                 phone:phoneNo
             }
         })
-
         res.status(200).send(userdata)
 
     }catch(error){
@@ -63,7 +71,7 @@ const addAmount=async(req,res)=>{
               name: name,
               contribution: parseInt(amount),
               userId: userid,
-              programId: programid,
+              programId:parseInt(programid),
             }
           });
         res.status(200).send(addFund)
@@ -107,4 +115,23 @@ const allDevotees=async(req,res)=>{
         res.status(400).send(error)
     }
 }
-module.exports={addProgram,getAllProgram,addAmount,getFundDetails,allDevotees,userData}
+
+// update status in program
+const updateStatus=async(req,res)=>{
+    const {id}=req.params
+    try{
+        const updatedata=await prisma.program.update({
+            where:{
+                id:parseInt(id)
+            },
+            data:{
+                status:'close'
+            }
+        })
+        
+        res.status(200).send(updatedata)
+    }catch(error){
+        res.status(400).send({error:error.message})
+    }
+}
+module.exports={addProgram,getAllProgram,addAmount,getFundDetails,allDevotees,userData,updateStatus,getClosedProgram}

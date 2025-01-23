@@ -16,7 +16,7 @@ app.use(bodyParser.json());
 app.use(
   cors({
     origin: "http://localhost:5173",
-    methods: [],
+    methods: ['GET','POST','PUT','DELETE'],
   })
 );
 app.get("/", (req, res) => {

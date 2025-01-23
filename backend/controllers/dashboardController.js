@@ -1,4 +1,5 @@
 const {PrismaClient}=require('@prisma/client')
+const { all } = require('../routes/userRouter')
 const prisma=new PrismaClient
 
 const dashboard=async(req,res)=>{
@@ -17,5 +18,18 @@ const dashboard=async(req,res)=>{
         res.status(400).send(error)
     }
 }
+const allprogramDetails=async(req,res)=>{
+    try{
+        const allProgram=await prisma.program.findMany({
+          where:{
+            status:'active'
+          }
+        })
+        res.status(200).send(allProgram)
+    }catch(error){
+        res.status(400).send(error)
+    }
+}
 
-module.exports={dashboard}
+
+module.exports={dashboard,allprogramDetails}

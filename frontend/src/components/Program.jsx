@@ -1,138 +1,137 @@
-
-import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from 'react'
+import { context } from "../App"
+import axios from 'axios'
 import { useNavigate } from "react-router-dom";
-import "bootstrap/dist/css/bootstrap.min.css";
-
+import "../App.css";
 const Program = () => {
-  const [programData, setProgramData] = useState([]);
-  const [chooseProgram, setChooseProgram] = useState("CurrrentProgram");
-  const [currentProgram, setcurrentProgram] = useState([]);
-  const [upCommingProgram, setupCommingProgram] = useState([]);
-  const [completedProgram, setcompletedProgram] = useState([]);
+  const {userRole}=useContext(context)
+  const [curenntProgram,setCurrentProgram]=useState([])
+  const [upCommingProgram,setUpcommingProgram]=useState([])
+  const [completedProgram,setCompletedProgram]=useState([])
+  const [activeTab,setActiveTab]=useState('current')
   const navigate = useNavigate();
 
-  const fetchData = async () => {
-    try {
-      const response = await axios.get("http://localhost:8000/api/allProgram");
-      setProgramData(response.data);
-
-      const currentDateTime = new Date();
-      const currentPrograms = [];
-      const upcomingPrograms = [];
-      const completedPrograms = [];
+  const fetchActiveData=async()=>{
+    try{
+      const response= await axios.get('http://localhost:8000/api/allProgram');
+      const currentDateTime=new Date();
+      const currentPrograms=[]
+      const upcommingPrograms=[]
 
       response.data.forEach((value) => {
-        const programStartTime = new Date(value.startTime);
-        const programEndTime = new Date(value.endTime);
-
-        if (
-          programStartTime <= currentDateTime &&
-          programEndTime >= currentDateTime
-        ) {
-          currentPrograms.push(value);
-        } else if (programStartTime > currentDateTime) {
-          upcomingPrograms.push(value);
-        } else if (programEndTime < currentDateTime) {
-          completedPrograms.push(value);
+        const startTime=new Date(value.startTime);
+        const endTime=new Date(value.endTime)
+        if(startTime<=currentDateTime && endTime>= currentDateTime){
+          currentPrograms.push(value)
+        }else if(startTime>currentDateTime){
+          upcommingPrograms.push(value)
         }
       });
+      setCurrentProgram(currentPrograms)
+      setUpcommingProgram(upcommingPrograms)
 
-      setcurrentProgram(currentPrograms);
-      setupCommingProgram(upcomingPrograms);
-      setcompletedProgram(completedPrograms);
-    } catch (error) {
-      console.log(error);
+    }catch(error){
+      console.log(error)
     }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
+  }
+  const fetchClosedData=async()=>{
+    try{
+      const response= await axios.get('http://localhost:8000/api/closedProgram')
+      setCompletedProgram(response.data.reverse())
+    }catch(error){
+      console.log(error)
+    }
+  }
+  useEffect(()=>{
+       fetchActiveData()
+       fetchClosedData()
+  },[])
   const handleProgram = (value) => {
-    navigate("/programdetails", { state: value });
-  };
+         navigate("/programdetails", { state: value });
+       };
+       const handleCloseProgram=async(value)=>{
+            console.log(value.id)
+            try{
+            await axios.put(`http://localhost:8000/api/updateStatus/${value.id}`)
+            fetchActiveData()
+            }catch(error){
+              console.log(error)
+            }
+          }
+ 
 
-  const handleChoosenProgram = (value) => {
-    setChooseProgram(value);
-  };
-
-  const renderPrograms = () => {
-    let programsToRender = [];
-    let title = "";
-
-    if (chooseProgram === "CurrrentProgram") {
-      programsToRender = currentProgram;
-      title = "Current Programs";
-    } else if (chooseProgram === "UpcommingProgram") {
-      programsToRender = upCommingProgram;
-      title = "Upcoming Programs";
-    } else if (chooseProgram === "CompletedProgram") {
-      programsToRender = completedProgram;
-      title = "Completed Programs";
-    }
-
-    return (
-      <>
-        <h5 className="fw-bold mb-3">{title}</h5>
-        <div className="d-flex flex-wrap gap-3">
-          {programsToRender.map((value, id) => (
-            <div
-              key={id}
-              className="d-flex flex-column align-items-start bg-light rounded p-3 shadow-sm border"
-            >
-              <h4 className="text-success fw-bold">{value.programname}</h4>
-              <p className="text-muted">{value.description}</p>
-              <small className="text-secondary">
-                <strong>Start:</strong>{" "}
-                {new Date(value.startTime).toLocaleString()}
-              </small>
-              <small className="text-secondary">
-                <strong>End:</strong> {new Date(value.endTime).toLocaleString()}
-              </small>
-              <button
-                className="btn btn-primary btn-sm mt-2"
-                onClick={() => handleProgram(value)}
-              >
-                View Details
-              </button>
+  const renderProgram = (program) => {
+    return program.length ? (
+      <div className='d-flex flex-wrap gap-3 mt-3'>
+        {program.map((value, id) => (
+          <div
+            key={id}
+            className=' col-md-4 col-lg-3 mb-4'
+          >
+            <div className='card flip-card bg-light'>
+              <div className='card-front'>
+                <div className='card-body'>
+                  <h4 className='text-success fw-bold'>{value.programname}</h4>
+                  <h6 className='text-muted mb-3'>{value.description}</h6>
+                  <div className='d-flex justify-content-between'>
+                    <p className=' mb-1'>
+                      <strong>Start:</strong> <span className='text-muted'> {new Date(value.startTime).toLocaleString()} </span>
+                    </p>
+                    <p className=' mb-1'>
+                      <strong>End:</strong> <span className='text-muted'>{new Date(value.endTime).toLocaleString()} </span> 
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className='card-back'>
+                <div className='card-body'>
+                  <div className='d-flex gap-3 align-items-center'>
+                    <button
+                      className="btn btn-primary  mb-2 rounded"
+                      onClick={() => handleProgram(value)}
+                    >
+                      <i className="bi bi-eye"></i> View Details
+                    </button>
+                    {userRole === 'Admin' && (
+                      <button
+                        className="btn btn-danger  mb-2 rounded "
+                        onClick={() => handleCloseProgram(value)}
+                      >
+                        <i className="bi bi-x-circle"></i> Close
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
             </div>
-          ))}
-        </div>
-      </>
+          </div>
+        ))}
+      </div>
+    ) : (
+      <p className="text-center text-muted mt-5">No Programs Available</p>
     );
-  };
+  }
+  
+
+  
+
 
   return (
-    <div className="container mt-4">
-      <div className="d-flex gap-3 mb-4">
-        <button
-          className={`btn btn-outline-success ${chooseProgram  === "CurrrentProgram" ? "active btn-primary" : " " }`}
-          onClick={() => handleChoosenProgram("CurrrentProgram")}
-        >
-          Current Program
-        </button>
-        <button
-          className={`btn btn-outline-success ${chooseProgram  === "UpcommingProgram" ? "active btn-primary" : " " }`}
-          onClick={() => handleChoosenProgram("UpcommingProgram")}
-        >
-          Upcoming Program
-        </button>
-        <button
-          className={`btn btn-outline-success ${chooseProgram  === "CompletedProgram" ? "active btn-primary" : " " }`}
-          onClick={() => handleChoosenProgram("CompletedProgram")}
-        >
-          Completed Program
-        </button>
-      </div>
+     <div className='container mt-4'>
+      <h3 className='fw-bold'>Program's :</h3>
+   <small><div className='d-flex gap-3 mt-3'>
+    <small> <button  className={`btn btn-outline-success ${activeTab  === "currrent" ? "active" : " " }`} onClick={()=>setActiveTab('current')}>Current Program</button> </small> 
+     <small> <button className='btn btn-outline-success' onClick={()=>setActiveTab('upcomming')}>Upcomming Program</button></small>  
+     <small>  <button className='btn btn-outline-success' onClick={()=>setActiveTab('completed')}>Completed Program</button></small> 
+      </div></small> 
 
-      {/* Render Programs Based on Selection */}
-      <div className="row gy-4">
-        <div className="col-12">{renderPrograms()}</div>
+      <div className=''>
+        {activeTab==='current' && renderProgram(curenntProgram) }
+        {activeTab==='upcomming' && renderProgram(upCommingProgram)}
+        {activeTab==='completed' &&  renderProgram(completedProgram)}
       </div>
-    </div>
-  );
-};
+     </div>
+  )
+}
 
-export default Program;
+export default Program
