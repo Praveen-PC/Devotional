@@ -45,6 +45,64 @@ const getClosedProgram=async(req,res)=>{
         res.status(400).send(error)
     }
 }
+//delete an program
+const removeProgram=async(req,res)=>{
+    const {id}=req.params
+    try{
+        const remove=await prisma.program.delete({
+            where:{
+                id:parseInt(id)
+            }
+        })
+        res.status(200).send(remove)
+    }catch(error){
+        res.status(400).send(error)
+    }
+}
+
+// update program
+
+// const updateProgram=async(req,res)=>{
+//     const {id}=req.params;
+//     const {programName,startTime,endTime,description}=req.body
+//     try{
+//      const updateData=await prisma.program.update({
+//         where:{
+//             id:parseInt(id)
+//         },
+//         data:{
+//             programname:programName,
+//             startTime:startTime,
+//             endTime:endTime,
+//             description:description
+//         }
+//      })
+//      res.status(200).send(updateData)
+//     }catch(error){
+//         res.status(400).send(error)
+//     }
+// }
+const updateProgram = async (req, res) => {
+    const { id } = req.params;
+    const { programName, startTime, endTime, description } = req.body;
+    try {
+        const updateData = await prisma.program.update({
+            where: {
+                id: parseInt(id), // Ensure the ID is parsed as an integer
+            },
+            data: {
+                programname: programName,
+                startTime: startTime,
+                endTime: endTime,
+                description: description,
+            },
+        });
+        res.status(200).send(updateData); // Use 200 for success
+    } catch (error) {
+        console.error(error); // Log the error for debugging
+        res.status(400).send({ error: "Failed to update program", details: error });
+    }
+};
 
 const userData=async(req,res)=>{
     const {phoneNo}=req.params;
@@ -134,4 +192,5 @@ const updateStatus=async(req,res)=>{
         res.status(400).send({error:error.message})
     }
 }
-module.exports={addProgram,getAllProgram,addAmount,getFundDetails,allDevotees,userData,updateStatus,getClosedProgram}
+module.exports={addProgram,getAllProgram,addAmount,getFundDetails,allDevotees,userData,updateStatus
+    ,getClosedProgram,removeProgram,updateProgram}

@@ -59,7 +59,7 @@ const Add = () => {
   }
   return (
     <>
-      <div className="container mt-4">
+      <div className="container mt-4" >
         <small>
           <div className="btn-group">
             <button

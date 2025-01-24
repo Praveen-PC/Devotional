@@ -103,12 +103,13 @@ import DataTable from "react-data-table-component";
 
 const Devotees = () => {
   const [devotees, setDevotees] = useState([]);
+  const [serachedItem,setSearchedItem]=useState([])
 
-  // Fetch data from the API
   const fetchDevotees = async () => {
     try {
       const response = await axios.get("http://localhost:8000/api/allDevotees");
       setDevotees(response.data);
+      setSearchedItem(response.data)
     } catch (error) {
       console.error("Error fetching devotees:", error);
     }
@@ -118,6 +119,14 @@ const Devotees = () => {
     fetchDevotees();
   }, []);
 
+  const handleSearch=(e)=>{
+    const value=e.target.value;
+    const checkData=devotees.filter( (item)=>
+    item.username.toLowerCase().includes(value.toLowerCase())||
+    item.phone.toLowerCase().includes(value.toLowerCase()) )
+    setSearchedItem(checkData)
+  }
+console.log(serachedItem)
   const customStyles = {
     rows: {
       style: {
@@ -136,7 +145,6 @@ const Devotees = () => {
       },
     },
   };
-  
 
   const columns = [
     {
@@ -165,7 +173,6 @@ const Devotees = () => {
       sortable: true,
     },
   ];
-
   
   const expandColumns = [
     {
@@ -182,11 +189,10 @@ const Devotees = () => {
       selector: (row) => row.contribution || 0,
     },
     {
-      name: "Contibution date Date",
+      name: "Contribution Date",
       selector: (row) =>
         new Date(row.program.createdAt).toLocaleDateString() || "N/A",
     },
-   
   ];
 
   const ExpandedComponent = ({ data }) => (
@@ -206,11 +212,13 @@ const Devotees = () => {
 
   return (
     <div className="mt-4 container">
-      <h2 className="fw-bold">Devotee's Contributions</h2>
+      <h4 className="fw-bold">Devotee's Contributions</h4>
+      <div className="border p-2 rounded mt-3 ">
+      <input type="search" className="form-control mt-1 p-2" placeholder="Search With UserName || PhoneNumber" onChange={handleSearch}/>
       <div className="border rounded p-2 mt-3">
         <DataTable
           columns={columns}
-          data={devotees}
+          data={serachedItem}
           expandableRows
           expandableRowsComponent={ExpandedComponent}
           pagination
@@ -220,6 +228,7 @@ const Devotees = () => {
           persistTableHead
           customStyles={customStyles}
         />
+      </div>
       </div>
     </div>
   );

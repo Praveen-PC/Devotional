@@ -23,10 +23,10 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-light p-2">
+    <nav className="navbar navbar-expand-lg navbar-light bg-light p-2 ">
       <div className="container-fluid">
-        <Link to='/program' className="navbar-brand fw-bold">
-          Navbar
+        <Link to='/program' className="navbar-brand fw-bold  rounded px-1   " style={{color:'#800000'}}>
+        BhaktiHub
         </Link>
         {isToken ? (
           <>

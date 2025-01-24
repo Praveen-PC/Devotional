@@ -42,5 +42,5 @@ model devotees {
   userId      Int?
   programId   Int
   user        user ?       @relation(fields: [userId], references: [id])
-  program     program     @relation(fields: [programId], references: [id])
+  program     program     @relation(fields: [programId], references: [id],onDelete:Cascade,onUpdate:Cascade)
 }

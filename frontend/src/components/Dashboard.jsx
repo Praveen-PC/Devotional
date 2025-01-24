@@ -101,7 +101,7 @@ const Dashboard = () => {
     <>
       <div className="container mt-5">
         <div className="d-flex justify-content-between  text-center">
-          <h3 className="fw-bold  mb-4 ">Admin Dashboard</h3>
+          <h3 className="fw-bold  mb-4 "> Dashboard</h3>
           <small>
             <button
               type="button"

@@ -11,5 +11,7 @@ router.get('/allDevotees',programController.allDevotees)
 router.get('/userdata/:phoneNo',programController.userData)
 router.put('/updateStatus/:id',programController.updateStatus)
 router.get('/closedProgram',programController.getClosedProgram)
+router.delete('/deleteprogram/:id',programController.removeProgram)
+router.put('/updateprogram/:id',programController.updateProgram)
 
 module.exports=router
