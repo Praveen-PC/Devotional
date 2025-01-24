@@ -16,7 +16,6 @@ const dashboard=async(req,res)=>{
         res.status(200).json([{programLength,devoteesLength,contributionLength,totalAmount}])   
     }catch(error){
         res.status(400).send(error)
-        
     }
 }
 const allprogramDetails=async(req,res)=>{

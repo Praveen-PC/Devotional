@@ -94,19 +94,23 @@
 // export default Devotees;
 
 
+
+
+
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import DataTable from "react-data-table-component";
 
 const Devotees = () => {
   const [devotees, setDevotees] = useState([]);
-  
+
+  // Fetch data from the API
   const fetchDevotees = async () => {
     try {
       const response = await axios.get("http://localhost:8000/api/allDevotees");
       setDevotees(response.data);
     } catch (error) {
-      console.log(error);
+      console.error("Error fetching devotees:", error);
     }
   };
 
@@ -114,7 +118,26 @@ const Devotees = () => {
     fetchDevotees();
   }, []);
 
-  // Columns for the main table
+  const customStyles = {
+    rows: {
+      style: {
+        minHeight: "40px", 
+      },
+    },
+    headCells: {
+      style: {
+        fontWeight: "bold",
+        fontSize:'14px'
+      },
+    },
+    cells: {
+      style: {
+        padding: "10px",
+      },
+    },
+  };
+  
+
   const columns = [
     {
       name: "#",
@@ -138,58 +161,65 @@ const Devotees = () => {
     {
       name: "Total Contribution",
       selector: (row) =>
-        row.devotees?.reduce(
-          (sum, contribution) => sum + (contribution.contribution || 0),
-          0
-        ) || "0",
+        row.devotees.reduce((sum, contribution) => sum + (contribution.contribution || 0), 0),
       sortable: true,
     },
   ];
 
-  // Expandable component for each row
+  
+  const expandColumns = [
+    {
+      name: "Program Name",
+      selector: (row) => row.program.programname,
+    },
+    {
+      name: "Program Date",
+      selector: (row) =>
+        new Date(row.program.startTime).toLocaleDateString() || "N/A",
+    },
+    {
+      name: "Contribution",
+      selector: (row) => row.contribution || 0,
+    },
+    {
+      name: "Contibution date Date",
+      selector: (row) =>
+        new Date(row.program.createdAt).toLocaleDateString() || "N/A",
+    },
+   
+  ];
+
   const ExpandedComponent = ({ data }) => (
     <div className="table-responsive">
-      <table className="table table-bordered">
-        <thead className="table-primary">
-          <tr>
-            <th>Program Name</th>
-            <th>Program Date</th>
-            <th>Contribution</th>
-            <th>Contribution Date</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.devotees?.map((devoteeContribution, idx) => (
-            <tr key={idx}>
-              <td>{devoteeContribution.program.programname}</td>
-              <td>
-                {new Date(devoteeContribution.program.startTime).toLocaleDateString()}
-              </td>
-              <td>{devoteeContribution.contribution}</td>
-              <td>
-                {new Date(devoteeContribution.createdAt).toLocaleString()}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className="border rounded  p-1">
+      <DataTable
+        columns={expandColumns}
+        data={data.devotees || []} 
+        pagination
+        highlightOnHover
+        responsive
+        customStyles={customStyles}
+      />
+      </div>
     </div>
   );
 
   return (
-    <div className="mt-4 container ">
+    <div className="mt-4 container">
       <h2 className="fw-bold">Devotee's Contributions</h2>
-      <div className="border rounded p-2 mt-3 ">
-      <DataTable
-        columns={columns}
-        data={devotees}
-        expandableRows
-        expandableRowsComponent={ExpandedComponent}
-        pagination
-        highlightOnHover
-        responsive
-        persistTableHead
-      />
+      <div className="border rounded p-2 mt-3">
+        <DataTable
+          columns={columns}
+          data={devotees}
+          expandableRows
+          expandableRowsComponent={ExpandedComponent}
+          pagination
+          highlightOnHover
+          responsive
+          striped
+          persistTableHead
+          customStyles={customStyles}
+        />
       </div>
     </div>
   );

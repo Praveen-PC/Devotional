@@ -25,6 +25,9 @@ const Program = () => {
           currentPrograms.push(value)
         }else if(startTime>currentDateTime){
           upcommingPrograms.push(value)
+        }else if(endTime<currentDateTime){
+          handleCloseProgram(value)
+          fetchClosedData()
         }
       });
       setCurrentProgram(currentPrograms)
@@ -120,9 +123,9 @@ const Program = () => {
      <div className='container mt-4'>
       <h3 className='fw-bold'>Program's :</h3>
    <small><div className='d-flex gap-3 mt-3'>
-    <small> <button  className={`btn btn-outline-success ${activeTab  === "currrent" ? "active" : " " }`} onClick={()=>setActiveTab('current')}>Current Program</button> </small> 
-     <small> <button className='btn btn-outline-success' onClick={()=>setActiveTab('upcomming')}>Upcomming Program</button></small>  
-     <small>  <button className='btn btn-outline-success' onClick={()=>setActiveTab('completed')}>Completed Program</button></small> 
+    <small> <button  type="button" className={`btn btn-outline-success ${activeTab  === "current" ? "active " : " " }`} onClick={()=>setActiveTab('current')}>Current Program</button> </small> 
+     <small> <button  type="button" className={`btn btn-outline-success ${activeTab  === "upcomming" ? "active " : " " }`} onClick={()=>setActiveTab('upcomming')}>Upcomming Program</button></small>  
+     <small>  <button  type="button" className={`btn btn-outline-success ${activeTab  === "completed" ? "active " : " " }`} onClick={()=>setActiveTab('completed')}>Completed Program</button></small> 
       </div></small> 
 
       <div className=''>

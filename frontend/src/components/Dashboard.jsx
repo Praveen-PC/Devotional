@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useTransition } from "react";
 import "../App.css";
 import axios from "axios";
 
@@ -13,12 +13,13 @@ const Dashboard = () => {
     amount: "",
     programid: "",
   });
+  const [printButton, setPrintButton] = useState(false);
+  const [printData, setPrintData] = useState({});
   console.log(contribution);
   const fetchData = async () => {
     try {
       const response = await axios.get("http://localhost:8000/api/dashboard");
       setData(response.data.reverse());
-     
     } catch (error) {
       console.log(error);
     }
@@ -37,19 +38,22 @@ const Dashboard = () => {
       }));
     }
   }, [userData]);
-  
-
 
   const handleContribution = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:8000/api/addFund",contribution);
-      resetContribution()
+      const resposne = await axios.post("http://localhost:8000/api/addFund",contribution );
+      setPrintData(contribution);
+      resetContribution();
+      if (resposne) {
+        setPrintButton(true);
+      }
     } catch (error) {
       console.error("Error:", error);
     }
   };
-
+  console.log(printButton);
+  console.log(printData);
   const handleNumberChange = async (e) => {
     const value = e.target.value;
     setPhoneNumber(value);
@@ -61,31 +65,38 @@ const Dashboard = () => {
         setUserData(response.data);
         console.log("Phone number:", value);
       }
-      resetContribution()
+      resetContribution();
     } catch (error) {
       console.log(error);
     }
-    
   };
 
   const handleProgramDetails = async () => {
     try {
       const response = await axios.get("http://localhost:8000/api/allprogram");
       setprogramData(response.data.reverse());
+      console.log(response.data)
     } catch (error) {
       console.log(error);
     }
   };
 
-  const resetContribution=()=>{
+  const resetContribution = () => {
     setContribution({
       userid: "",
       name: "",
       amount: "",
       programid: "",
+    });
+  };
 
-    })
-  }
+  const handlePrint = () => {
+    const printContents = document.getElementById("receipt-section").innerHTML;
+    const originalContents = document.body.innerHTML;
+    document.body.innerHTML = printContents;
+    window.print();
+    document.body.innerHTML = originalContents;
+  };
   return (
     <>
       <div className="container mt-5">
@@ -148,15 +159,10 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div
-        className="modal fade"
+      <div  className="modal fade"
         id="staticBackdrop"
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        tabIndex="-1"
-        aria-labelledby="staticBackdropLabel"
-        aria-hidden="true"
-      >
+        data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header">
@@ -247,6 +253,34 @@ const Dashboard = () => {
                   </button>
                 </div>
               </form>
+              {printButton ? (
+                <>
+                  <div className="  border rounded p-3" id="receipt-section">
+                    <h6 className="fw-bold">Receipts</h6>
+                    <h6 className="mb-1">Receipt for Contribution</h6>
+                    <p className="mb-1">
+                      <strong>Contributor:</strong>
+                      {printData.name}{" "}
+                    </p>
+                    <p className="mb-1">
+                      <strong>Contributor Amount:</strong>₹{printData.amount}{" "}
+                    </p>
+                    <p className="mb-1">
+                      {" "}
+                      <strong>Date</strong> {new Date().toLocaleString()}
+                    </p>
+                    <button
+                      type="submit"
+                      className="btn btn-success"
+                      onClick={() => handlePrint(contribution)}
+                    >
+                      Print Receipt
+                    </button>
+                  </div>
+                </>
+              ) : (
+                ""
+              )}
             </div>
           </div>
         </div>
