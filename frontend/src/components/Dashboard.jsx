@@ -13,6 +13,7 @@ const Dashboard = () => {
     amount: "",
     programid: "",
   });
+  console.log(programData)
   const [printButton, setPrintButton] = useState(false);
   const [printData, setPrintData] = useState({});
   console.log(contribution);
@@ -45,6 +46,8 @@ const Dashboard = () => {
       const resposne = await axios.post("http://localhost:8000/api/addFund",contribution );
       setPrintData(contribution);
       resetContribution();
+      setPhoneNumber('')
+
       if (resposne) {
         setPrintButton(true);
       }
@@ -90,13 +93,53 @@ const Dashboard = () => {
     });
   };
 
+  
   const handlePrint = () => {
-    const printContents = document.getElementById("receipt-section").innerHTML;
-    const originalContents = document.body.innerHTML;
-    document.body.innerHTML = printContents;
+    const printContents = document.getElementById("receipt-section").innerHTML; 
+    const originalContents = document.body.innerHTML; 
+  
+    // Replace the body content with the section to print
+    document.body.innerHTML = `
+      <html>
+        <head>
+          <title>Print Receipt</title>
+          <style>
+            /* Add any styles needed for printing */
+            body {
+              font-family: Arial, sans-serif;
+              margin: 20px;
+            }
+          </style>
+        </head>
+        <body>
+          ${printContents}
+        </body>
+      </html>
+    `;
+  
+    // Trigger the print dialog
     window.print();
+  
+    // Restore the original content after printing
     document.body.innerHTML = originalContents;
+  
+    // Optional: Reload the scripts/styles (if needed)
+    window.location.reload();
   };
+  
+
+ 
+  
+  const handleClosePrint = () => {
+    setPrintButton(false); 
+    resetContribution()
+    setPhoneNumber('')
+  };
+  console.log(programData)
+  
+ 
+  
+  
   return (
     <>
       <div className="container mt-5">
@@ -275,6 +318,13 @@ const Dashboard = () => {
                       onClick={() => handlePrint(contribution)}
                     >
                       Print Receipt
+                    </button>
+                    <button
+                      type="submit"
+                      className="btn btn-danger mx-3"
+                      onClick={ handleClosePrint}
+                    >
+                      Close
                     </button>
                   </div>
                 </>

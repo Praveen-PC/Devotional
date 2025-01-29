@@ -62,33 +62,14 @@ const removeProgram=async(req,res)=>{
 
 // update program
 
-// const updateProgram=async(req,res)=>{
-//     const {id}=req.params;
-//     const {programName,startTime,endTime,description}=req.body
-//     try{
-//      const updateData=await prisma.program.update({
-//         where:{
-//             id:parseInt(id)
-//         },
-//         data:{
-//             programname:programName,
-//             startTime:startTime,
-//             endTime:endTime,
-//             description:description
-//         }
-//      })
-//      res.status(200).send(updateData)
-//     }catch(error){
-//         res.status(400).send(error)
-//     }
-// }
+
 const updateProgram = async (req, res) => {
     const { id } = req.params;
     const { programName, startTime, endTime, description } = req.body;
     try {
         const updateData = await prisma.program.update({
             where: {
-                id: parseInt(id), // Ensure the ID is parsed as an integer
+                id: parseInt(id), 
             },
             data: {
                 programname: programName,
@@ -97,9 +78,9 @@ const updateProgram = async (req, res) => {
                 description: description,
             },
         });
-        res.status(200).send(updateData); // Use 200 for success
+        res.status(200).send(updateData); 
     } catch (error) {
-        console.error(error); // Log the error for debugging
+        console.error(error);
         res.status(400).send({ error: "Failed to update program", details: error });
     }
 };
@@ -128,7 +109,7 @@ const addAmount=async(req,res)=>{
             data: {
               name: name,
               contribution: parseInt(amount),
-              userId: userid,
+            ...(userid ? { userId: parseInt(userid) } : {}),
               programId:parseInt(programid),
             }
           });

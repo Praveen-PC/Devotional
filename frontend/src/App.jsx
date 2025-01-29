@@ -9,6 +9,7 @@ import Devotees from "./components/Devotees";
 import Add from "./components/Add";
 import PrivateRouter from "./components/PrivateRouter";
 import Contribution from "./components/Contribution";
+import Reports from "./components/Reports";
 
 export const context = createContext();
 
@@ -70,6 +71,9 @@ const App = () => {
               </PrivateRouter>
             }
           />
+          <Route
+          path="/report"
+          element={<PrivateRouter role={['Admin']}><Reports/></PrivateRouter> }/>
           <Route path="/programdetails" element={<PrivateRouter role={['Admin','Devotee']}><Contribution/></PrivateRouter>}/>
         </Routes>
       </context.Provider>

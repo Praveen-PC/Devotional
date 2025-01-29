@@ -396,13 +396,43 @@ const Contribution = () => {
     setReceiptData(value);
   };
 
+
+
   const handlePrint = () => {
-    const printContents = document.getElementById("receipt-section").innerHTML;
-    const originalContents = document.body.innerHTML;
-    document.body.innerHTML = printContents;
+    const printContents = document.getElementById("receipt-section").innerHTML; // Get the section to print
+    const originalContents = document.body.innerHTML; // Store the current page content
+  
+    // Replace the body content with the section to print
+    document.body.innerHTML = `
+      <html>
+        <head>
+          <title>Print Receipt</title>
+          <style>
+            /* Add any styles needed for printing */
+            body {
+              font-family: Arial, sans-serif;
+              margin: 20px;
+            }
+          </style>
+        </head>
+        <body>
+          ${printContents}
+        </body>
+      </html>
+    `;
+  
+    // Trigger the print dialog
     window.print();
+  
+    // Restore the original content after printing
     document.body.innerHTML = originalContents;
+  
+    // Optional: Reload the scripts/styles (if needed)
+    window.location.reload();
   };
+  
+  
+ 
 
   const handleContribution = async (e) => {
     e.preventDefault();

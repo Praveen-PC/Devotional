@@ -136,7 +136,7 @@ console.log(serachedItem)
     headCells: {
       style: {
         fontWeight: "bold",
-        fontSize:'14px'
+        fontSize:'14px',
       },
     },
     cells: {

@@ -12,7 +12,8 @@ const Navbar = () => {
     { name: "Dashboard", link: "/dashboard", role: ["Admin"] },
     { name: "Program", link: "/program", role: ["Admin", "Devotee"] },
     { name: `Devotee's`, link: "/devotees", role: ["Admin"] },
-    { name: "Add", link: "/add", role: ["Admin"] },
+    {name:`Report's`,link:"/report",role:['Admin']},
+    { name: "Add", link: "/add", role: ["Admin"] }
   ];
 
   const handleLogout = () => {

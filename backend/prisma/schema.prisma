@@ -23,7 +23,7 @@ model user {
 model program {
   id          Int         @id @default(autoincrement())
   programname String
-  description String
+  description String       @db.Text
   startTime   DateTime
   endTime     DateTime
   status      String
@@ -41,6 +41,6 @@ model devotees {
   updatedAt   DateTime    @updatedAt
   userId      Int?
   programId   Int
-  user        user ?       @relation(fields: [userId], references: [id])
+  user        user?       @relation(fields: [userId], references: [id])
   program     program     @relation(fields: [programId], references: [id],onDelete:Cascade,onUpdate:Cascade)
 }
