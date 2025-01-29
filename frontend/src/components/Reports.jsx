@@ -44,7 +44,7 @@ const Reports = () => {
                 }
 
                 const blob = new Blob([buffer], { type: "application/octet-stream" });
-                saveAs(blob, `contribution_report ${new Date().toLocaleDateString()}.xlsx`);
+                saveAs(blob, `contribution_report ${new Date(reportDate.startDate).toLocaleDateString()} to ${new Date(reportDate.endDate).toLocaleDateString()}.xlsx`);
             } catch (error) {
                 console.error("Error generating XLSX:", error);
             }
